@@ -42,7 +42,7 @@ end
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_configuration_dir() .. "themes/wonder-pop/theme.lua")
 
-terminal = "urxvt"
+terminal = "alacritty"
 screenshot_cmd = {
     snip = [[bash -c "
         datestr=$(date +%Y-%m-%d-%T)
