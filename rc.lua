@@ -43,6 +43,12 @@ end
 beautiful.init(gears.filesystem.get_configuration_dir() .. "themes/wonder-pop/theme.lua")
 
 terminal = "alacritty"
+brightness_cmd = {
+    up = "brightnessctl -d intel_backlight s 5%+",
+    down = "brightnessctl -d intel_backlight s 5%-",
+    max = "brightnessctl -d intel_backlight s 100%",
+    min = "brightnessctl -d intel_backlight s 1%",
+}
 screenshot_cmd = {
     snip = [[bash -c "
         datestr=$(date +%Y-%m-%d-%T)
@@ -236,9 +242,17 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
               {description = "select previous", group = "layout"}),
     awful.key({ }, "Print", function () awful.spawn(screenshot_cmd.screenshot)  end,
-              {description = "select previous", group = "layout"}),
+              {description = "screenshot full", group = "layout"}),
     awful.key({ "Control"                  }, "Print", function () awful.spawn(screenshot_cmd.snip)  end,
-              {description = "select previous", group = "layout"}),
+              {description = "screenshot snip", group = "layout"}),
+    awful.key({ }, "XF86MonBrightnessUp", function () awful.spawn(brightness_cmd.up)  end,
+              {description = "brightness up", group = "layout"}),
+    awful.key({ }, "XF86MonBrightnessDown", function () awful.spawn(brightness_cmd.down)  end,
+              {description = "brightness down", group = "layout"}),
+    awful.key({ "Shift" }, "XF86MonBrightnessDown", function () awful.spawn(brightness_cmd.min)  end,
+              {description = "brightness min" }),
+    awful.key({ "Shift" }, "XF86MonBrightnessUp", function () awful.spawn(brightness_cmd.max)  end,
+              {description = "brightness max" }),
 
     awful.key({ modkey, "Control" }, "n",
               function ()
