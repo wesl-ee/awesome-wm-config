@@ -12,6 +12,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
+local hostname = io.popen("uname -n"):read()
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -40,7 +41,23 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_configuration_dir() .. "themes/wonder-pop/theme.lua")
+local hostThemeFilename = gears.filesystem.get_configuration_dir()
+    .. "themes/"
+    .. hostname
+    .. "/theme.lua"
+local defaultTheme = loadfile(gears.filesystem.get_configuration_dir()
+    .. "themes/default/theme.lua")()
+local hostTheme = loadfile(gears.filesystem.get_configuration_dir()
+    .. "themes/"
+    .. hostname
+    .. "/theme.lua")
+
+local theme = defaultTheme
+if hostTheme then
+    theme = gears.table.join(theme, hostTheme())
+end
+
+beautiful.init(theme)
 
 terminal = "alacritty"
 function brightness_up()
@@ -99,7 +116,8 @@ screenshot_cmd = {
         notify-send 'Screenshot saved!' "~/img/screenshot/${filename}"
     "]],
 }
-launcher = "rofi -show run"
+naughty.notify({text = theme.font})
+launcher = "rofi -font \"" .. theme.font .. "\" -show run"
 editor = os.getenv("EDITOR") or "vi"
 editor_cmd = terminal .. " -e " .. editor
 
