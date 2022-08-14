@@ -43,12 +43,48 @@ end
 beautiful.init(gears.filesystem.get_configuration_dir() .. "themes/wonder-pop/theme.lua")
 
 terminal = "alacritty"
-brightness_cmd = {
-    up = "brightnessctl -d intel_backlight s 5%+",
-    down = "brightnessctl -d intel_backlight s 5%-",
-    max = "brightnessctl -d intel_backlight s 100%",
-    min = "brightnessctl -d intel_backlight s 1%",
-}
+function brightness_up()
+    awful.spawn("brightnessctl -d intel_backlight s 5%+")
+    curr_brightness("Brightness Up")
+end
+function brightness_down()
+    awful.spawn("brightnessctl -d intel_backlight s 5%-")
+    curr_brightness("Brightness Down")
+end
+function brightness_min()
+    awful.spawn("brightnessctl -d intel_backlight s 1%")
+    curr_brightness("Min Brightness")
+end
+function brightness_max()
+    awful.spawn("brightnessctl -d intel_backlight s 100%")
+    curr_brightness("Max Brightness")
+end
+function curr_brightness(title)
+    local filename = "/tmp/awesome-notify-brightness"
+    local file = io.open(filename, "r")
+    local id
+    if file then
+        id = file:read("*number")
+        file:close()
+    else
+        id = naughty.get_next_notification_id()
+        file = io.open(filename, "w")
+        if file then
+            file:write(id)
+            file:close()
+        end
+    end
+    awful.spawn.easy_async([[
+        bash -c "printf $(((`brightnessctl g` * 100) / `brightnessctl m`))"
+    ]],
+    function(stdout)
+        naughty.notify({
+            title = title,
+            text = "Currently " .. string.sub(stdout, 0, string.len(stdout) - 1) .. "%",
+            replaces_id = id,
+        })
+    end)
+end
 screenshot_cmd = {
     snip = [[bash -c "
         datestr=$(date +%Y-%m-%d-%T)
@@ -245,13 +281,13 @@ globalkeys = gears.table.join(
               {description = "screenshot full", group = "layout"}),
     awful.key({ "Control"                  }, "Print", function () awful.spawn(screenshot_cmd.snip)  end,
               {description = "screenshot snip", group = "layout"}),
-    awful.key({ }, "XF86MonBrightnessUp", function () awful.spawn(brightness_cmd.up)  end,
+    awful.key({ }, "XF86MonBrightnessUp", brightness_up,
               {description = "brightness up", group = "layout"}),
-    awful.key({ }, "XF86MonBrightnessDown", function () awful.spawn(brightness_cmd.down)  end,
+    awful.key({ }, "XF86MonBrightnessDown", brightness_down,
               {description = "brightness down", group = "layout"}),
-    awful.key({ "Shift" }, "XF86MonBrightnessDown", function () awful.spawn(brightness_cmd.min)  end,
+    awful.key({ "Shift" }, "XF86MonBrightnessDown", brightness_min,
               {description = "brightness min" }),
-    awful.key({ "Shift" }, "XF86MonBrightnessUp", function () awful.spawn(brightness_cmd.max)  end,
+    awful.key({ "Shift" }, "XF86MonBrightnessUp", brightness_max,
               {description = "brightness max" }),
 
     awful.key({ modkey, "Control" }, "n",
