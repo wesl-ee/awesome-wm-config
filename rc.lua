@@ -116,8 +116,7 @@ screenshot_cmd = {
         notify-send 'Screenshot saved!' "~/img/screenshot/${filename}"
     "]],
 }
-naughty.notify({text = theme.font})
-launcher = "rofi -font \"" .. theme.font .. "\" -show run"
+launcher = "rofi -font \"" .. theme.launcher_font .. "\" -show run"
 editor = os.getenv("EDITOR") or "vi"
 editor_cmd = terminal .. " -e " .. editor
 
