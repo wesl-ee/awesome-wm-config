@@ -12,7 +12,15 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
 local hostname = io.popen("uname -n"):read()
+
+-- Widgets
+local cpu_widget = require("widgets.cpu-widget.cpu-widget")
+local ram_widget = require("widgets.ram.ram")
+local volume_widget = require("widgets.volume.volume")
+local github_contributions_widget = require("widgets.github-contributions.github-contributions")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -206,21 +214,49 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
+    s.mywibox = awful.wibar({
+        position = "top",
+        screen = s,
+    })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
+            s.mylayoutbox,
             s.mytaglist,
             s.mypromptbox,
         },
         { layout = wibox.layout.fixed.horizontal },
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
+            cpu_widget({
+                width = 70,
+                step_width = 2,
+                step_spacing = 0,
+                color = "#a9bcff",
+            }),
+            ram_widget({
+                widget_height = 10,
+                widget_width = 50,
+                widget_show_buf = false,
+                color_free = "#a9bcff",
+                color_used = "#a960ff",
+                color_buf = "#a960ff",
+            }),
+            github_contributions_widget({
+                username = 'wesl-ee',
+                color_of_empty_cells = theme.bg_normal,
+            }),
             mytextclock,
-            s.mylayoutbox,
+            volume_widget({
+                widget_type = "vertical_bar",
+                device = "default",
+                main_color = theme.fg_normal,
+                mute_color = theme.bg_normal,
+                width = 20,
+            }),
         },
     }
 end)

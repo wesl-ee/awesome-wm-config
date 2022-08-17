@@ -11,8 +11,8 @@ local themes_path = gfs.get_themes_dir()
 
 local theme = {}
 
-theme.font          = "Noto Sans CJK JP 10"
-theme.launcher_font          = "Noto Sans CJK JP 10"
+theme.font          = "Noto Sans CJK JP"
+theme.launcher_font          = "Noto Sans CJK JP 12"
 
 theme.bg_normal     = "#000000"
 theme.bg_focus      = "#535d6c"
@@ -25,11 +25,15 @@ theme.fg_focus      = "#ffffff"
 theme.fg_urgent     = "#ffffff"
 theme.fg_minimize   = "#ffffff"
 
-theme.useless_gap   = dpi(0)
-theme.border_width  = dpi(5)
+theme.useless_gap   = dpi(2)
+theme.border_width  = dpi(0)
 theme.border_normal = "#000000"
-theme.border_focus  = "#ff0000"
+-- theme.border_focus  = "#000000"
 theme.border_marked = "#91231c"
+theme.border_color_active = "#00ff00"
+theme.gap_single_client = false
+
+theme.wibar_type = "normal"
 
 local taglist_square_size = dpi(4)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(
