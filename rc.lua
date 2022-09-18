@@ -16,6 +16,8 @@ local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
 local hostname = io.popen("uname -n"):read()
 
+awful.screen.set_auto_dpi_enabled(true)
+
 -- Widgets
 local cpu_widget = require("widgets.cpu-widget.cpu-widget")
 local ram_widget = require("widgets.ram.ram")
@@ -124,7 +126,7 @@ screenshot_cmd = {
         notify-send 'Screenshot saved!' "~/img/screenshot/${filename}"
     "]],
 }
-launcher = "rofi -font \"" .. theme.launcher_font .. "\" -show run"
+launcher = "rofi -dpi 1 -font \"" .. theme.launcher_font .. "\" -show run"
 editor = os.getenv("EDITOR") or "vi"
 editor_cmd = terminal .. " -e " .. editor
 
