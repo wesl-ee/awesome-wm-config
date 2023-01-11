@@ -23,6 +23,7 @@ local cpu_widget = require("widgets.cpu-widget.cpu-widget")
 local ram_widget = require("widgets.ram.ram")
 local volume_widget = require("widgets.volume.volume")
 local github_contributions_widget = require("widgets.github-contributions.github-contributions")
+local notmuch_mail_widget = require("widgets.notmuch-mail.notmuch-mail")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -248,6 +249,10 @@ awful.screen.connect_for_each_screen(function(s)
                 color_buf = "#a960ff",
             }),
             github_contributions_widget({
+                username = 'wesl-ee',
+                color_of_empty_cells = theme.bg_normal,
+            }),
+            notmuch_mail_widget({
                 username = 'wesl-ee',
                 color_of_empty_cells = theme.bg_normal,
             }),
