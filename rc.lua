@@ -252,10 +252,7 @@ awful.screen.connect_for_each_screen(function(s)
                 username = 'wesl-ee',
                 color_of_empty_cells = theme.bg_normal,
             }),
-            notmuch_mail_widget({
-                username = 'wesl-ee',
-                color_of_empty_cells = theme.bg_normal,
-            }),
+            notmuch_mail_widget({ }),
             mytextclock,
             volume_widget({
                 widget_type = "vertical_bar",

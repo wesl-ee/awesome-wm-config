@@ -27,7 +27,7 @@ local function worker(_)
             local unread_emails_num = tonumber(stdout) or 0
             if (unread_emails_num > 0) then
                 notmuch_mail_icon:set_text("📩")
-                notmuch_mail_text:set_text(stdout)
+                notmuch_mail_text:set_text(stdout .. " unread")
             elseif (unread_emails_num == 0) then
                 notmuch_mail_icon:set_text("✉️ ")
                 notmuch_mail_text:set_text("No new mail")
