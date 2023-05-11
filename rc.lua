@@ -14,9 +14,11 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local xresources = require("beautiful.xresources")
 local dpi = xresources.apply_dpi
+local Gio = require("lgi").Gio
 local hostname = io.popen("uname -n"):read()
 
 awful.screen.set_auto_dpi_enabled(true)
+math.randomseed(os.time())
 
 -- Widgets
 local cpu_widget = require("widgets.cpu-widget.cpu-widget")
@@ -86,6 +88,10 @@ end
 function brightness_max()
     awful.spawn("brightnessctl -d intel_backlight s 100%")
     curr_brightness("Max Brightness")
+end
+function show_random_image()
+    local file = get_random_file_from_dir("img/cute", { "jpg", "png" })
+    awful.spawn("sxiv img/cute/" .. file)
 end
 function curr_brightness(title)
     local filename = "/tmp/awesome-notify-brightness"
@@ -348,6 +354,8 @@ globalkeys = gears.table.join(
               {description = "brightness min" }),
     awful.key({ "Shift" }, "XF86MonBrightnessUp", brightness_max,
               {description = "brightness max" }),
+    awful.key({ modkey }, "i", show_random_image,
+              {description = "show random image" }),
 
     awful.key({ modkey, "Control" }, "n",
               function ()
@@ -559,4 +567,42 @@ end)
 
 client.connect_signal("focus", function(c) c.border_focus = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+
+--- Get the name of a random file from a given directory.
+-- @tparam string path The directory to search.
+-- @tparam[opt] table exts Specific extensions to limit the search to. eg:`{ "jpg", "png" }`
+--   If ommited, all files are considered.
+-- @tparam[opt=false] boolean absolute_path Return the absolute path instead of the filename.
+-- @treturn string|nil A randomly selected filename from the specified path (with
+--   a specified extension if required) or nil if no suitable file is found. If `absolute_path`
+--   is set, then a path is returned instead of a file name.
+function get_random_file_from_dir(path, exts, absolute_path)
+    local files, valid_exts = {}, {}
+
+    -- Transforms { "jpg", ... } into { [jpg] = #, ... }
+    if exts then for i, j in ipairs(exts) do valid_exts[j:lower():gsub("^[.]", "")] = i end end
+
+    -- Build a table of files from the path with the required extensions
+    local file_list = Gio.File.new_for_path(path):enumerate_children("standard::*", 0)
+
+    -- This will happen when the directory doesn't exist.
+    if not file_list then return nil end
+
+    for file in function() return file_list:next_file() end do
+        if file:get_file_type() == "REGULAR" then
+            local file_name = file:get_display_name()
+
+            if not exts or valid_exts[file_name:lower():match(".+%.(.*)$") or ""] then
+               table.insert(files, file_name)
+            end
+        end
+    end
+
+    if #files == 0 then return nil end
+
+    -- Return a randomly selected filename from the file table
+    local file = files[math.random(#files)]
+
+    return absolute_path and (path:gsub("[/]*$", "") .. "/" .. file) or file
+end
 -- }}}
