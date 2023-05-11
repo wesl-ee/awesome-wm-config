@@ -90,8 +90,8 @@ function brightness_max()
     curr_brightness("Max Brightness")
 end
 function show_random_image()
-    local file = get_random_file_from_dir("img/cute", { "jpg", "png" })
-    awful.spawn("sxiv img/cute/" .. file)
+    local file = "img/cute/" .. get_random_file_from_dir("img/cute", { "jpg", "png" })
+    awful.spawn("sxiv -b " .. file)
 end
 function curr_brightness(title)
     local filename = "/tmp/awesome-notify-brightness"
