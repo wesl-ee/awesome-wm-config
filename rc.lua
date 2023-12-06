@@ -521,6 +521,7 @@ awful.rules.rules = {
         class = {
           "Arandr",
           "Sxiv",
+          "hooya-gtk",
           "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
           },
 

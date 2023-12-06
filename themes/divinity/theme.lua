@@ -10,11 +10,13 @@ local naughty = require("naughty")
 local theme = {}
 
 theme.wallpaper = function(s)
+    -- Horizontal
     if s.index == 1 then
-        gears.wallpaper.maximized("/home/w/img/wp/QmQRUFTicaw24gVAyrdcVHUYKy8A4jdr49KwxxCzmQXnwc", s)
+        gears.wallpaper.maximized("/home/w/img/wp/bafkreien5twpk7fo3wybvywprtdc6ghm7dcjtubfaq5xehm676yfkdqvfa", s)
     end
+    -- Vertical
     if s.index == 2 then
-        gears.wallpaper.maximized("/home/w/img/wp/QmdtHf8AfxUQwfnK6Z1J7EoBNByLiagqDWU9eM3g8DgJtx", s)
+        gears.wallpaper.maximized("/home/w/img/wp/bafkreicrwwqell7sbe2yhna7koogx57mydekvr3qup6lq7s4osatvtqa3i", s)
     end
 end
 
